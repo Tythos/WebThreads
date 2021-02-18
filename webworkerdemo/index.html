@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web Thread (Worker+WASM) Sandbox</title>
+        <meta charset="utf-8"/>
+        <style>
+            body {
+                margin: 0;
+                padding: 16px;
+                background-color: #111;
+                color: #eee;
+                font-family: consolas;
+                font-size: 16pt;
+            }
+        </style>
+        <script type="text/javascript">
+            function qson(selector, event, listener) {
+                let element = window.document.querySelector(selector);
+                element.addEventListener(event, listener);
+            }
+
+            function onFirstClick(event) {
+                window.myWorker.postMessage([1.1, 2.2]);
+            }
+
+            function onSecondClick(event) {
+                window.myWorker.postMessage([3.3, 4.4]);
+            }
+
+            function onWorkerMessage(event) {
+                console.log(`Message received from worker:`);
+                console.log(event);
+            }
+
+            function onWorkerError(event) {
+                console.log("An error occured in the web worker:");
+                console.log(event);
+            }
+
+            function bindEventListeners() {
+                qson("#firstButton", "click", onFirstClick);
+                qson("#secondButton", "click", onSecondClick);
+                window.myWorker.addEventListener("message", onWorkerMessage);
+                window.myWorker.addEventListener("error", onWorkerError);
+            }
+
+            function onWindowLoad() {
+                if (window.Worker) {
+                    window.myWorker = new Worker("worker.js");
+                } else {
+                    console.error("WebWorkers not supported!");
+                }
+                bindEventListeners();
+            }
+
+            window.addEventListener("load", onWindowLoad);
+        </script>
+    </head>
+    <body>
+        <button id="firstButton">Click Me First</button>
+        <button id="secondButton">Click Me Second</button>
+    </body>
+</html>

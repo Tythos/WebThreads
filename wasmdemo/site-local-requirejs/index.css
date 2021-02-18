@@ -1,0 +1,11 @@
+/*
+*/
+
+body {
+    margin: 0;
+    padding: 16px;
+    background-color: #111;
+    color: #eee;
+    font-family: monospace;
+    font-size: 12pt;
+}
